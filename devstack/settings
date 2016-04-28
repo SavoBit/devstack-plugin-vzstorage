@@ -1,0 +1,12 @@
+# Devstack settings
+
+# Defaults
+# --------
+
+
+######### Plugin Specific #########
+VZSTORAGE_CLUSTER_NAME=${CINDER_VZSTORAGE_CLUSTER_NAME:-testcluster}
+VZSTORAGE_STANDALONE_REPO_PKG=http://download.pstorage.parallels.com/standalone/packages/rhel/7/pstorage-release.noarch.rpm
+
+VZSTORAGE_DATA_DIR=${VZSTORAGE_DATA_DIR:-/vzstorage}
+
