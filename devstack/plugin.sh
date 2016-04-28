@@ -23,7 +23,8 @@ if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
     echo_summary "Installing Vzstorage"
     install_vzstorage
 elif [[ "$1" == "stack" && "$2" == "post-config" ]]; then
-    if is_service_enabled cinder && [[ "$CONFIGURE_VZSTORAGE_CINDER" == "True" ]]; then
+    if is_service_enabled cinder && \
+        [[ "$CONFIGURE_VZSTORAGE_CINDER" == "True" ]]; then
         echo_summary "Configuring Vzstorage as a backend for Nova"
         configure_cinder_backend_vzstorage
     fi
