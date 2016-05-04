@@ -6,7 +6,7 @@
 
 ######### Plugin Specific #########
 if [[ -z "$VZSTORAGE_CLUSTER_NAME" ]]; then
-    VZSTORAGE_CLUSTER_NAME=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 10 | head -n 1)
+    VZSTORAGE_CLUSTER_NAME=testcluster_$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 10 | head -n 1)
 fi
 VZSTORAGE_STANDALONE_REPO_PKG=http://download.pstorage.parallels.com/standalone/packages/rhel/7/pstorage-release.noarch.rpm
 

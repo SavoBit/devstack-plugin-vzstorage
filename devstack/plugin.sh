@@ -18,8 +18,12 @@
 # - stop_vzstorage
 # - cleanup_vzstorage
 
+source vzstorage-functions.sh
 
-if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
+if [[ "$1" == "source" ]]; then
+    # Initial source
+    source $TOP_DIR/devstack/vzstorage-functions.sh
+elif [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
     echo_summary "Installing Vzstorage"
     install_vzstorage
 elif [[ "$1" == "stack" && "$2" == "post-config" ]]; then

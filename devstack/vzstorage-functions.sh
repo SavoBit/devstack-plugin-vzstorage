@@ -46,11 +46,13 @@ function install_vzstorage {
 # Cleanup Vzstorage
 # Triggered from devstack/plugin.sh as part of devstack "clean"
 function cleanup_vzstorage {
-
+    set -e
+    cat /proc/mounts | awk '/^pstorage\:\/\// {print $1}' | xargs -n 1 sudo umount
     sudo service pstorage-mdsd stop
     sudo service pstorage-csd stop
     sudo rm -rf /etc/pstorage/clusters/*
     sudo rm -rf ${VZSTORAGE_DATA_DIR}
+    set +e
 }
 
 
