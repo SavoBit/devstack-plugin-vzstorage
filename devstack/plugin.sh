@@ -18,7 +18,7 @@
 # - stop_vzstorage
 # - cleanup_vzstorage
 VZSTORAGE_PLUGIN_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
-source $VZSTORAGE_PLUGIN_DIR/devstack/vzstorage-functions.sh
+source $VZSTORAGE_PLUGIN_DIR/vzstorage-functions.sh
 
 if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
     echo_summary "Installing Vzstorage"
