@@ -3,10 +3,9 @@
 # devstack/vzstorage-functions.sh
 # Functions to control the installation and configuration of the Vzstorage
 
-# Installs Vzstorage packages, confiugures minimal functioning setup 
+# Installs Vzstorage packages
 # Triggered from devstack/plugin.sh as part of devstack "pre-install"
 function install_vzstorage {
-    set -e
     CLUSTER_NAME=$VZSTORAGE_CLUSTER_NAME
     PSTORAGE_PKGS="pstorage-chunk-server pstorage-client pstorage-ctl \
                 pstorage-libs-shared pstorage-metadata-server"
@@ -25,6 +24,12 @@ function install_vzstorage {
 
     #sudo yum install -y $PSTORAGE_PKGS
     install_packages $PSTORAGE_PKGS
+}
+
+# Confiugures minimal functioning setup 
+# Triggered from devstack/plugin.sh as part of devstack "pre-install"
+function setup_vzstorage {
+    set -e
     [ -d $VZSTORAGE_DATA_DIR ] || sudo mkdir $VZSTORAGE_DATA_DIR
 
     echo PASSWORD | sudo pstorage -c $CLUSTER_NAME \
