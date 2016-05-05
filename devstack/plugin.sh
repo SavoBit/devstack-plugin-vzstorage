@@ -23,6 +23,8 @@ source $VZSTORAGE_PLUGIN_DIR/vzstorage-functions.sh
 if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
     echo_summary "Installing Vzstorage"
     install_vzstorage
+    echo_summary "Setup Vzstorage cluster $VZSTORAGE_CLUSTER_NAME"
+    setup_vzstorage
 elif [[ "$1" == "stack" && "$2" == "post-config" ]]; then
     if is_service_enabled cinder && \
         [[ "$CONFIGURE_VZSTORAGE_CINDER" == "True" ]]; then

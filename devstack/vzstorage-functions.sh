@@ -28,8 +28,10 @@ function install_vzstorage {
 # Confiugures minimal functioning setup 
 # Triggered from devstack/plugin.sh as part of devstack "pre-install"
 function setup_vzstorage {
-    set -e
     cluster_name=$VZSTORAGE_CLUSTER_NAME
+    if [[ -z "$cluster_name" ]]; then
+        die $LINENO "VZSTORAGE_CLUSTER_NAME is not defined"
+    fi
     [ -d $VZSTORAGE_DATA_DIR ] || sudo mkdir $VZSTORAGE_DATA_DIR
 
     echo PASSWORD | sudo pstorage -c $cluster_name \
@@ -45,19 +47,17 @@ function setup_vzstorage {
 
     echo 127.0.0.1 | sudo tee /etc/pstorage/clusters/$cluster_name/bs.list
 
-    set +e
+    set +eu
 }
 
 # Cleanup Vzstorage
 # Triggered from devstack/plugin.sh as part of devstack "clean"
 function cleanup_vzstorage {
-    set -exu
     cat /proc/mounts | awk '/^pstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
     sudo service pstorage-mdsd stop
     sudo service pstorage-csd stop
     sudo rm -rf /etc/pstorage/clusters/*
     sudo rm -rf ${VZSTORAGE_DATA_DIR}
-    set +exu
 }
 
 
