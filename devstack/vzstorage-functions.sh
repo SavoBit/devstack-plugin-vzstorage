@@ -3,11 +3,9 @@
 # devstack/vzstorage-functions.sh
 # Functions to control the installation and configuration of the Vzstorage
 
-# Installs Vzstorage packages, confiugures minimal functioning setup 
+# Installs Vzstorage packages
 # Triggered from devstack/plugin.sh as part of devstack "pre-install"
 function install_vzstorage {
-    set -e
-    CLUSTER_NAME=$VZSTORAGE_CLUSTER_NAME
     PSTORAGE_PKGS="pstorage-chunk-server pstorage-client pstorage-ctl \
                 pstorage-libs-shared pstorage-metadata-server"
     if [[ "$os_VENDOR" == "CentOS" ]]; then
@@ -24,29 +22,38 @@ function install_vzstorage {
     fi
 
     #sudo yum install -y $PSTORAGE_PKGS
-    install_packages $PSTORAGE_PKGS
+    install_package $PSTORAGE_PKGS
+}
+
+# Confiugures minimal functioning setup 
+# Triggered from devstack/plugin.sh as part of devstack "pre-install"
+function setup_vzstorage {
+    cluster_name=$VZSTORAGE_CLUSTER_NAME
+    if [[ -z "$cluster_name" ]]; then
+        die $LINENO "VZSTORAGE_CLUSTER_NAME is not defined"
+    fi
     [ -d $VZSTORAGE_DATA_DIR ] || sudo mkdir $VZSTORAGE_DATA_DIR
 
-    echo PASSWORD | sudo pstorage -c $CLUSTER_NAME \
+    echo PASSWORD | sudo pstorage -c $cluster_name \
         make-mds -I -a 127.0.0.1 \
-        -r $VZSTORAGE_DATA_DIR/$CLUSTER_NAME-mds -P
+        -r $VZSTORAGE_DATA_DIR/$cluster_name-mds -P
     sudo service pstorage-mdsd start
     sudo chkconfig pstorage-mdsd on
 
-    sudo pstorage -c $CLUSTER_NAME make-cs \
-        -r $VZSTORAGE_DATA_DIR/$CLUSTER_NAME-cs
+    sudo pstorage -c $cluster_name make-cs \
+        -r $VZSTORAGE_DATA_DIR/$cluster_name-cs
     sudo service pstorage-csd start
     sudo chkconfig pstorage-csd on
 
-    echo 127.0.0.1 | sudo tee /etc/pstorage/clusters/$CLUSTER_NAME/bs.list
+    echo 127.0.0.1 | sudo tee /etc/pstorage/clusters/$cluster_name/bs.list
 
-    set +e
+    set +eu
 }
 
 # Cleanup Vzstorage
 # Triggered from devstack/plugin.sh as part of devstack "clean"
 function cleanup_vzstorage {
-
+    cat /proc/mounts | awk '/^pstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
     sudo service pstorage-mdsd stop
     sudo service pstorage-csd stop
     sudo rm -rf /etc/pstorage/clusters/*
