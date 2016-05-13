@@ -65,10 +65,10 @@ function configure_cinder_backend_vzstorage {
     iniset $CINDER_CONF $be_name volume_driver \
         "cinder.volume.drivers.vzstorage.VZStorageDriver"
     iniset $CINDER_CONF $be_name vzstorage_shares_config \
-        "$CINDER_CONF_DIR/vzstorage-shares-$be_name.conf"
+        "$CINDER_CONF_DIR/vzstorage-shares-${be_name}.conf"
 
     CINDER_VZSTORAGE_CLUSTERS="$VZSTORAGE_CLUSTER_NAME \
         [\"-u\", \"stack\", \"-g\", \"qemu\", \"-m\", \"0770\"]"
     echo "$CINDER_VZSTORAGE_CLUSTERS" |\
-        tee "$CINDER_CONF_DIR/vzstorage-shares-$be_name.conf"
+        tee "$CINDER_CONF_DIR/vzstorage-shares-${be_name}.conf"
 }
