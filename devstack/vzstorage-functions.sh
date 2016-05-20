@@ -6,11 +6,11 @@
 # Installs Vzstorage packages
 # Triggered from devstack/plugin.sh as part of devstack "pre-install"
 function install_vzstorage {
-    PSTORAGE_PKGS="pstorage-chunk-server pstorage-client pstorage-ctl \
-                pstorage-libs-shared pstorage-metadata-server"
+    PSTORAGE_PKGS="vstorage-chunk-server vstorage-client vstorage-ctl \
+                vstorage-libs-shared vstorage-metadata-server"
     if [[ "$os_VENDOR" == "CentOS" ]]; then
         sudo rpm -i $PSTORAGE_STANDALONE_REPO_PKG
-        PSTORAGE_PKGS=$PSTORAGE_PKGS pstorage-kmod
+        PSTORAGE_PKGS=$PSTORAGE_PKGS vstorage-kmod
     elif [[ "$os_VENDOR" == "Virtuozzo" ]]; then
         echo "Running on Virtuozzo distribution, \
             it requires no other kernel modules"
@@ -34,18 +34,18 @@ function setup_vzstorage {
     fi
     [ -d $VZSTORAGE_DATA_DIR ] || sudo mkdir $VZSTORAGE_DATA_DIR
 
-    echo PASSWORD | sudo pstorage -c $cluster_name \
+    echo PASSWORD | sudo vstorage -c $cluster_name \
         make-mds -I -a 127.0.0.1 \
         -r $VZSTORAGE_DATA_DIR/$cluster_name-mds -P
-    sudo service pstorage-mdsd start
-    sudo chkconfig pstorage-mdsd on
+    sudo service vstorage-mdsd start
+    sudo chkconfig vstorage-mdsd on
 
-    sudo pstorage -c $cluster_name make-cs \
+    sudo vstorage -c $cluster_name make-cs \
         -r $VZSTORAGE_DATA_DIR/$cluster_name-cs
-    sudo service pstorage-csd start
-    sudo chkconfig pstorage-csd on
+    sudo service vstorage-csd start
+    sudo chkconfig vstorage-csd on
 
-    echo 127.0.0.1 | sudo tee /etc/pstorage/clusters/$cluster_name/bs.list
+    echo 127.0.0.1 | sudo tee /etc/vstorage/clusters/$cluster_name/bs.list
 
     set +eu
 }
@@ -53,10 +53,10 @@ function setup_vzstorage {
 # Cleanup Vzstorage
 # Triggered from devstack/plugin.sh as part of devstack "clean"
 function cleanup_vzstorage {
-    cat /proc/mounts | awk '/^pstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
-    sudo service pstorage-mdsd stop
-    sudo service pstorage-csd stop
-    sudo rm -rf /etc/pstorage/clusters/*
+    cat /proc/mounts | awk '/^vstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
+    sudo service vstorage-mdsd stop
+    sudo service vstorage-csd stop
+    sudo rm -rf /etc/vstorage/clusters/*
     sudo rm -rf ${VZSTORAGE_DATA_DIR}
 }
 
