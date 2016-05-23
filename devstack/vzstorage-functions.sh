@@ -47,6 +47,11 @@ function setup_vzstorage {
 
     echo 127.0.0.1 | sudo tee /etc/vstorage/clusters/$cluster_name/bs.list
 
+    # need this to ensure backward compatibility
+    # with existing Openstack code
+    sudo ln -s /var/log/pstorage /var/log/vstorage
+    sudo chown -R stack:qemu /var/log/pstorage
+
     set +eu
 }
 
