@@ -49,7 +49,7 @@ function setup_vzstorage {
 
     # need this to ensure backward compatibility
     # with existing Openstack code
-    sudo ln -s /var/log/pstorage /var/log/vstorage
+    sudo ln -s /var/log/vstorage /var/log/pstorage
     sudo chown -R stack:qemu /var/log/pstorage
 
     set +eu
