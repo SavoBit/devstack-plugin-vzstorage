@@ -25,6 +25,9 @@ if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
     install_vzstorage
     echo_summary "Setup Vzstorage cluster $VZSTORAGE_CLUSTER_NAME"
     setup_vzstorage
+elif [[ "$1" == "stack" && "$2" == "post-config" ]]; then
+    echo_summary "Adjust nova.conf for Vzstorage"
+    configure_nova_vzstorage
 fi
 
 if [[ "$1" == "unstack" ]]; then

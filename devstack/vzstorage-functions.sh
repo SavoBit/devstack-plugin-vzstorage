@@ -49,8 +49,8 @@ function setup_vzstorage {
 
     # need this to ensure backward compatibility
     # with existing Openstack code
-    sudo ln -s /var/log/vstorage /var/log/pstorage
-    sudo chown -R stack:qemu /var/log/pstorage
+    [ -d /var/log/pstorage ] || sudo ln -s /var/log/vstorage /var/log/pstorage
+    sudo chown -R stack:root /var/log/pstorage
 
     set +eu
 }
@@ -80,7 +80,14 @@ function configure_cinder_backend_vzstorage {
         "$CINDER_CONF_DIR/vzstorage-shares-${be_name}.conf"
 
     CINDER_VZSTORAGE_CLUSTERS="$VZSTORAGE_CLUSTER_NAME \
-        [\"-u\", \"stack\", \"-g\", \"qemu\", \"-m\", \"0770\"]"
+        [\"-u\", \"stack\", \"-g\", \"root\", \"-m\", \"0770\"]"
     echo "$CINDER_VZSTORAGE_CLUSTERS" |\
         tee "$CINDER_CONF_DIR/vzstorage-shares-${be_name}.conf"
+}
+
+
+# Post-configuration for Nova
+# Triggered from devstack/plugin.sh as part of devstack "post-config"
+function configure_nova_vzstorage {
+    iniset $NOVA_CONF libvirt vzstorage_mount_group root
 }
