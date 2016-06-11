@@ -37,13 +37,11 @@ function setup_vzstorage {
     echo PASSWORD | sudo vstorage -c $cluster_name \
         make-mds -I -a 127.0.0.1 \
         -r $VZSTORAGE_DATA_DIR/$cluster_name-mds -P
-    sudo service vstorage-mdsd start
-    sudo chkconfig vstorage-mdsd on
+    sudo systemctl start vstorage-mdsd.target
 
     sudo vstorage -c $cluster_name make-cs \
         -r $VZSTORAGE_DATA_DIR/$cluster_name-cs
-    sudo service vstorage-csd start
-    sudo chkconfig vstorage-csd on
+    sudo systemctl start vstorage-csd.target
 
     echo 127.0.0.1 | sudo tee /etc/vstorage/clusters/$cluster_name/bs.list
 
@@ -59,8 +57,8 @@ function setup_vzstorage {
 # Triggered from devstack/plugin.sh as part of devstack "clean"
 function cleanup_vzstorage {
     cat /proc/mounts | awk '/^vstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
-    sudo service vstorage-mdsd stop
-    sudo service vstorage-csd stop
+    sudo systemctl stop vstorage-mdsd.target
+    sudo systemctl stop vstorage-csd.target
     sudo rm -rf /etc/vstorage/clusters/*
     sudo rm -rf ${VZSTORAGE_DATA_DIR}
 }
