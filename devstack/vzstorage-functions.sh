@@ -39,11 +39,11 @@ function setup_vzstorage {
         -r $VZSTORAGE_DATA_DIR/$cluster_name-mds -P
     sudo systemctl start vstorage-mdsd.target
 
+    echo 127.0.0.1 | sudo tee /etc/vstorage/clusters/$cluster_name/bs.list
+
     sudo vstorage -c $cluster_name make-cs \
         -r $VZSTORAGE_DATA_DIR/$cluster_name-cs
     sudo systemctl start vstorage-csd.target
-
-    echo 127.0.0.1 | sudo tee /etc/vstorage/clusters/$cluster_name/bs.list
 
     # need this to ensure backward compatibility
     # with existing Openstack code
