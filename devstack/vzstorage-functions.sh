@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # devstack/vzstorage-functions.sh
 # Functions to control the installation and configuration of the Vzstorage
@@ -32,18 +32,22 @@ function setup_vzstorage {
     if [[ -z "$cluster_name" ]]; then
         die $LINENO "VZSTORAGE_CLUSTER_NAME is not defined"
     fi
-    [ -d $VZSTORAGE_DATA_DIR ] || sudo mkdir $VZSTORAGE_DATA_DIR
 
-    echo PASSWORD | sudo vstorage -c $cluster_name \
-        make-mds -I -a 127.0.0.1 \
-        -r $VZSTORAGE_DATA_DIR/$cluster_name-mds -P
-    sudo systemctl start vstorage-mdsd.target
+    if [[ "$VZSTORAGE_EXISTING_CLUSTER" != "True" ]]; then
 
-    echo 127.0.0.1 | sudo tee /etc/vstorage/clusters/$cluster_name/bs.list
+        [ -d $VZSTORAGE_DATA_DIR ] || sudo mkdir $VZSTORAGE_DATA_DIR
 
-    sudo vstorage -c $cluster_name make-cs \
-        -r $VZSTORAGE_DATA_DIR/$cluster_name-cs
-    sudo systemctl start vstorage-csd.target
+        echo PASSWORD | sudo vstorage -c $cluster_name \
+            make-mds -I -a 127.0.0.1 \
+            -r $VZSTORAGE_DATA_DIR/$cluster_name-mds -P
+        sudo systemctl start vstorage-mdsd.target
+
+        echo 127.0.0.1 | sudo tee /etc/vstorage/clusters/$cluster_name/bs.list
+
+        sudo vstorage -c $cluster_name make-cs \
+            -r $VZSTORAGE_DATA_DIR/$cluster_name-cs
+        sudo systemctl start vstorage-csd.target
+    fi
 
     # need this to ensure backward compatibility
     # with existing Openstack code
@@ -56,11 +60,13 @@ function setup_vzstorage {
 # Cleanup Vzstorage
 # Triggered from devstack/plugin.sh as part of devstack "clean"
 function cleanup_vzstorage {
-    cat /proc/mounts | awk '/^vstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
-    sudo systemctl stop vstorage-mdsd.target
-    sudo systemctl stop vstorage-csd.target
-    sudo rm -rf /etc/vstorage/clusters/*
-    sudo rm -rf ${VZSTORAGE_DATA_DIR}
+    if [[ "$VZSTORAGE_EXISTING_CLUSTER" != "True" ]]; then
+        cat /proc/mounts | awk '/^vstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
+        sudo systemctl stop vstorage-mdsd.target
+        sudo systemctl stop vstorage-csd.target
+        sudo rm -rf /etc/vstorage/clusters/*
+        sudo rm -rf ${VZSTORAGE_DATA_DIR}
+    fi
 }
 
 
