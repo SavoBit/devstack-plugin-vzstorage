@@ -60,8 +60,8 @@ function setup_vzstorage {
 # Cleanup Vzstorage
 # Triggered from devstack/plugin.sh as part of devstack "clean"
 function cleanup_vzstorage {
+    cat /proc/mounts | awk '/^vstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
     if [[ "$VZSTORAGE_EXISTING_CLUSTER" != "True" ]]; then
-        cat /proc/mounts | awk '/^vstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
         sudo systemctl stop vstorage-mdsd.target
         sudo systemctl stop vstorage-csd.target
         sudo rm -rf /etc/vstorage/clusters/*
