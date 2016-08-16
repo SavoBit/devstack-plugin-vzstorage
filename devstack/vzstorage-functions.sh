@@ -90,7 +90,7 @@ function configure_cinder_backend_vzstorage {
         iniset $CINDER_CONF $be_name vzstorage_default_volume_format qcow2
     fi
 
-    iniset $CINDER_CONF $be_name volume_backend_name = $be_name
+    iniset $CINDER_CONF $be_name volume_backend_name $be_name
 
     CINDER_VZSTORAGE_CLUSTERS="$VZSTORAGE_CLUSTER_NAME \
         [\"-u\", \"stack\", \"-g\", \"root\", \"-m\", \"0770\"]"
