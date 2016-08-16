@@ -1,7 +1,9 @@
 # Plug-in overrides
 
 if [ "$CONFIGURE_VZSTORAGE_CINDER" == "True" ]; then
-    CINDER_ENABLED_BACKENDS=vzstorage:vzstorage1
+    if [[ "$CINDER_ENABLED_BACKENDS" != *"vzstorage"* ]]; then
+        CINDER_ENABLED_BACKENDS=vzstorage:vzstorage1
+    fi
     TEMPEST_STORAGE_PROTOCOL=vzstorage
     ATTACH_ENCRYPTED_VOLUME_AVAILABLE=False
     TEMPEST_ATTACH_ENCRYPTED_VOLUME=False
