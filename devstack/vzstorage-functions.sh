@@ -82,9 +82,15 @@ function configure_cinder_backend_vzstorage {
         "cinder.volume.drivers.vzstorage.VZStorageDriver"
     iniset $CINDER_CONF $be_name vzstorage_shares_config \
         "$CINDER_CONF_DIR/vzstorage-shares-${be_name}.conf"
-    if [[ "$LIBVIRT_TYPE" == "parallels" ]]; then
+
+    if [[ "$be_name" == "vstorage-ploop" ]]; then
         iniset $CINDER_CONF $be_name vzstorage_default_volume_format parallels
     fi
+    if [[ "$be_name" == "vstorage-qcow2" ]]; then
+        iniset $CINDER_CONF $be_name vzstorage_default_volume_format qcow2
+    fi
+
+    iniset $CINDER_CONF $be_name volume_backend_name = $be_name
 
     CINDER_VZSTORAGE_CLUSTERS="$VZSTORAGE_CLUSTER_NAME \
         [\"-u\", \"stack\", \"-g\", \"root\", \"-m\", \"0770\"]"
