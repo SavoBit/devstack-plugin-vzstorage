@@ -33,7 +33,7 @@ function setup_vzstorage {
         die $LINENO "VZSTORAGE_CLUSTER_NAME is not defined"
     fi
 
-    if [[ "$VZSTORAGE_EXISTING_CLUSTER" != "True" ]]; then
+    if [[ "${VZSTORAGE_EXISTING_CLUSTER,,}" != "true" ]]; then
 
         [ -d $VZSTORAGE_DATA_DIR ] || sudo mkdir $VZSTORAGE_DATA_DIR
 
@@ -61,7 +61,7 @@ function setup_vzstorage {
 # Triggered from devstack/plugin.sh as part of devstack "clean"
 function cleanup_vzstorage {
     cat /proc/mounts | awk '/^vstorage\:\/\// {print $1}' | xargs -r -n 1 sudo umount
-    if [[ "$VZSTORAGE_EXISTING_CLUSTER" != "True" ]]; then
+    if [[ "${VZSTORAGE_EXISTING_CLUSTER,,}" != "true" ]]; then
         sudo systemctl stop vstorage-mdsd.target
         sudo systemctl stop vstorage-csd.target
         sudo rm -rf /etc/vstorage/clusters/*
