@@ -84,7 +84,7 @@ function configure_cinder_backend_vzstorage {
         "$CINDER_CONF_DIR/vzstorage-shares-${be_name}.conf"
 
     if [[ "$be_name" == "vstorage-ploop" ]]; then
-        iniset $CINDER_CONF $be_name vzstorage_default_volume_format parallels
+        iniset $CINDER_CONF $be_name vzstorage_default_volume_format ploop
     fi
     if [[ "$be_name" == "vstorage-qcow2" ]]; then
         iniset $CINDER_CONF $be_name vzstorage_default_volume_format qcow2
