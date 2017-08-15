@@ -91,6 +91,7 @@ function configure_cinder_backend_vzstorage {
     fi
 
     iniset $CINDER_CONF $be_name volume_backend_name $be_name
+    iniset $CINDER_CONF $be_name enable_unsupported_driver True
 
     CINDER_VZSTORAGE_CLUSTERS="$VZSTORAGE_CLUSTER_NAME \
         [\"-u\", \"stack\", \"-g\", \"root\", \"-m\", \"0770\"]"
