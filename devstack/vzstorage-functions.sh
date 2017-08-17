@@ -75,8 +75,6 @@ function cleanup_vzstorage {
 # configure_cinder_backend_vzstorage
 function configure_cinder_backend_vzstorage {
     local be_name=$1
-    iniset $CINDER_CONF DEFAULT os_privileged_user_auth_url \
-        $KEYSTONE_AUTH_URI/v2.0
     iniset $CINDER_CONF $be_name volume_backend_name $be_name
     iniset $CINDER_CONF $be_name volume_driver \
         "cinder.volume.drivers.vzstorage.VZStorageDriver"
